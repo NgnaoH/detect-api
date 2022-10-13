@@ -4,7 +4,6 @@ from src.constants.http_status_codes import HTTP_200_OK
 import numpy as np
 from PIL import Image
 import requests
-import json
 
 detect = Blueprint("detect", __name__, url_prefix="/api/v1/detect")
 
@@ -19,7 +18,6 @@ class Images:
         self.boxes = boxes
         self.size = long_size
 
-
 @detect.get('/')
 def detect_images():
     images = request.json["images"]
@@ -30,6 +28,7 @@ def detect_images():
         image = np.array(Image.open(response.raw))
         prediction_result = craft.detect_text(image)
         boxes = prediction_result["boxes"].tolist()
+        print(prediction_result)
         img = Images(url, boxes)
         result.append(img.__dict__)
 
