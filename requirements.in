@@ -2,3 +2,4 @@ craft-text-detector==0.4.3
 Flask==2.2.2
 numpy==1.21.6
 Pillow==9.2.0
+pytesseract==0.3.10

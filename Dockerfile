@@ -12,6 +12,7 @@ RUN pip install --upgrade pip
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6 -y
+RUN apt install tesseract-ocr -y
 
 # copy every content from the local file to the image
 COPY . /app
