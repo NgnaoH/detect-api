@@ -13,7 +13,7 @@ craft = Craft(output_dir=None, crop_type="box",
               cuda=False, long_size=1280, link_threshold=0.5, text_threshold=0.7, low_text=0.4)
 
 
-def boxmerger(data, threshold=10, expand=2):
+def boxmerger(data, threshold=10, expand=1):
     results = []
 
     def convertPointByThreshold(box, thrh):
@@ -102,16 +102,15 @@ class Box:
         self.text = text
 
 class Images:
-    def __init__(self, url, boxes, lang):
+    def __init__(self, url, boxes):
         self.url = url
         self.boxes = boxes
-        self.lang = lang
-
 
 @detect.get('/')
 def detect_images():
     images = request.json["images"]
-    result = []
+    lang = request.json["lang"]
+    images_detected = []
     for url in images:
         response = requests.get(url, stream=True)
         np_image = np.array(Image.open(response.raw))
@@ -122,12 +121,13 @@ def detect_images():
             [tl, tr, br, bl] = bbox
             crop_img = np_image[tl[1]:br[1], tl[0]:tr[0]]
             box_detected = Box(
-                bbox, pytesseract.image_to_string(crop_img, lang="eng"))
+                bbox, pytesseract.image_to_string(crop_img, lang=lang))
             boxMergered.append(box_detected.__dict__)
-        img = Images(url, boxMergered, "eng")
-        result.append(img.__dict__)
+        img = Images(url, boxMergered)
+        images_detected.append(img.__dict__)
 
     return jsonify({
         'message': "Image detect successfully!",
-        "images": result
+        "images": images_detected,
+        "lang": lang
     }), HTTP_200_OK
