@@ -3,6 +3,7 @@ from flask import Flask
 from src.constants.http_status_codes import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from flask.json import jsonify
 from src.detect import detect
+from src.languages import languages
 
 def create_app(test_config=None):
     
@@ -16,6 +17,7 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     app.register_blueprint(detect)
+    app.register_blueprint(languages)
     
     @app.errorhandler(HTTP_404_NOT_FOUND)
     def handle_404(e):
